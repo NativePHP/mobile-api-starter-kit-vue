@@ -18,6 +18,23 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
+     * Determine the root view based on the current route.
+     */
+    public function rootView(Request $request): string
+    {
+        if ($request->routeIs('mobile.*')) {
+            // Auth routes use simple layout, protected routes use app layout with EDGE
+            if ($request->routeIs('mobile.login', 'mobile.register', 'mobile.auth-check')) {
+                return 'mobile-auth';
+            }
+
+            return 'mobile-app';
+        }
+
+        return $this->rootView;
+    }
+
+    /**
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning
