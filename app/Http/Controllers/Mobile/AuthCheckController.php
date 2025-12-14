@@ -14,7 +14,7 @@ class AuthCheckController extends Controller
     {
         // If no token, redirect to login immediately (server-side)
         if (blank(SecureStorage::get('api_token'))) {
-            return redirect()->route('login');
+            return redirect()->route('mobile.login');
         }
 
         // User has token, show biometric check page

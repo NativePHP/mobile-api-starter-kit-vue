@@ -17,7 +17,7 @@ class EnsureMobileAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (! ApiClient::isAuthenticated()) {
-            return redirect()->route('login');
+            return redirect()->route('mobile.login');
         }
 
         return $next($request);

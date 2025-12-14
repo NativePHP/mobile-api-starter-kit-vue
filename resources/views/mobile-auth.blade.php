@@ -30,17 +30,10 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
         @vite(['resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
         @inertiaHead
     </head>
-    <body class="nativephp-safe-area bg-white font-sans antialiased dark:bg-zinc-900">
+    <body class="nativephp-safe-area bg-white font-sans antialiased dark:bg-zinc-900 min-h-screen">
         <main class="w-full px-6 py-8">
             <div class="mx-auto w-full max-w-md animate-[slideInFromRight_0.3s_ease-out]">
                 @inertia
