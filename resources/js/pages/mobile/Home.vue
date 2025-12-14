@@ -2,6 +2,7 @@
 import { secureStorage } from '#nativephp';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { apiFetch } from '@/lib/api';
 
 interface Props {
     userName: string;
@@ -17,13 +18,9 @@ const logout = async () => {
     try {
         const token = await secureStorage.get('api_token');
 
-        await fetch('/api/logout', {
+        await apiFetch('/api/logout', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
+            token: token ?? undefined,
         });
     } catch (error) {
         console.error(error);

@@ -2,6 +2,7 @@
 import { secureStorage } from '#nativephp';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { apiFetch } from '@/lib/api';
 
 const form = useForm({
     email: '',
@@ -16,19 +17,17 @@ const login = async () => {
     errorMessage.value = '';
 
     try {
-        const response = await fetch('/api/login', {
+        const { response, data } = await apiFetch<{
+            token: string;
+            user: { name: string; email: string };
+            message?: string;
+        }>('/api/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
+            body: {
                 email: form.email,
                 password: form.password,
-            }),
+            },
         });
-
-        const data = await response.json();
 
         if (response.ok) {
             await secureStorage.set('api_token', data.token);

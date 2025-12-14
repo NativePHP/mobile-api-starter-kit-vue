@@ -2,6 +2,7 @@
 import { dialog, secureStorage } from '#nativephp';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { apiFetch } from '@/lib/api';
 
 interface Props {
     userName: string;
@@ -32,20 +33,18 @@ const updateProfile = async () => {
     try {
         const token = await secureStorage.get('api_token');
 
-        const response = await fetch('/api/user/profile', {
+        const { response, data } = await apiFetch<{
+            user: { name: string; email: string };
+            message?: string;
+            errors?: { email?: string[] };
+        }>('/api/user/profile', {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
+            token: token ?? undefined,
+            body: {
                 name: profileForm.name,
                 email: profileForm.email,
-            }),
+            },
         });
-
-        const data = await response.json();
 
         if (response.ok) {
             await secureStorage.set('user_name', data.user.name);
@@ -74,21 +73,18 @@ const updatePassword = async () => {
     try {
         const token = await secureStorage.get('api_token');
 
-        const response = await fetch('/api/user/password', {
+        const { response, data } = await apiFetch<{
+            message?: string;
+            errors?: { current_password?: string[] };
+        }>('/api/user/password', {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
+            token: token ?? undefined,
+            body: {
                 current_password: passwordForm.current_password,
                 password: passwordForm.password,
                 password_confirmation: passwordForm.password_confirmation,
-            }),
+            },
         });
-
-        const data = await response.json();
 
         if (response.ok) {
             await dialog.toast('Password updated successfully');
@@ -119,13 +115,9 @@ const logout = async () => {
     try {
         const token = await secureStorage.get('api_token');
 
-        await fetch('/api/logout', {
+        await apiFetch('/api/logout', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
+            token: token ?? undefined,
         });
     } catch (error) {
         // Ignore logout API errors
