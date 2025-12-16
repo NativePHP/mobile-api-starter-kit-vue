@@ -31,7 +31,7 @@ const updateProfile = async () => {
     profileForm.clearErrors();
 
     try {
-        const token = await secureStorage.get('api_token');
+        const tokenResult = await secureStorage.get('api_token');
 
         const { response, data } = await apiFetch<{
             user: { name: string; email: string };
@@ -39,7 +39,7 @@ const updateProfile = async () => {
             errors?: { email?: string[] };
         }>('/api/user/profile', {
             method: 'PUT',
-            token: token ?? undefined,
+            token: tokenResult?.value ?? undefined,
             body: {
                 name: profileForm.name,
                 email: profileForm.email,
@@ -71,14 +71,14 @@ const updatePassword = async () => {
     passwordForm.clearErrors();
 
     try {
-        const token = await secureStorage.get('api_token');
+        const tokenResult = await secureStorage.get('api_token');
 
         const { response, data } = await apiFetch<{
             message?: string;
             errors?: { current_password?: string[] };
         }>('/api/user/password', {
             method: 'PUT',
-            token: token ?? undefined,
+            token: tokenResult?.value ?? undefined,
             body: {
                 current_password: passwordForm.current_password,
                 password: passwordForm.password,
@@ -113,11 +113,11 @@ const logout = async () => {
     loggingOut.value = true;
 
     try {
-        const token = await secureStorage.get('api_token');
+        const tokenResult = await secureStorage.get('api_token');
 
         await apiFetch('/api/logout', {
             method: 'POST',
-            token: token ?? undefined,
+            token: tokenResult?.value ?? undefined,
         });
     } catch (error) {
         // Ignore logout API errors

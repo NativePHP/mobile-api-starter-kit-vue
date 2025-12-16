@@ -16,11 +16,11 @@ const logout = async () => {
     loggingOut.value = true;
 
     try {
-        const token = await secureStorage.get('api_token');
+        const tokenResult = await secureStorage.get('api_token');
 
         await apiFetch('/api/logout', {
             method: 'POST',
-            token: token ?? undefined,
+            token: tokenResult?.value ?? undefined,
         });
     } catch (error) {
         console.error(error);
